@@ -38,7 +38,7 @@ public class ebs_service extends Service {
             }
         };
         public void run(){
-            Javalin app = Javalin.create().start(getPortFromURL());
+            Javalin app = Javalin.create().disableStartupBanner().start(getPortFromURL());
             app.post("/", rootHandler);
             app.get("/", rootHandler);
 

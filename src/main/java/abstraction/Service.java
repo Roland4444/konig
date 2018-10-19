@@ -34,12 +34,15 @@ public abstract class Service {
         return httpClient.send(binaryReq, HttpResponse.BodyHandlers.discarding());
     }
 
-    public  CompletableFuture<byte[]> sendAsync(byte[] message,String uri) {
+    public  CompletableFuture<?> sendAsync(byte[] message,String uri) {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(uri))
                 .POST(HttpRequest.BodyPublishers.ofByteArray(message))
                 .build();
-        return httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofByteArray()).thenApply(HttpResponse::body);
+        return httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofByteArray()).thenAccept(response -> {
+            System.out.println(new String(response.body()));
+        })
+                ;
     }
 
 
