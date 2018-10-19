@@ -1,11 +1,15 @@
+import abstraction.Client;
+import abstraction.DescriptionReveived;
+import abstraction.Message;
 import abstraction.Service;
 import io.javalin.Context;
 import io.javalin.Handler;
 import io.javalin.Javalin;
 
-public class echo_Server extends Service {
-    public echo_Server(String URL) {
+public class echo_Actor extends Service {
+    public echo_Actor(String URL) {
         super(URL);
+        this.Client.port=getPortFromURL();
     }
     @Override
     public void receive(Object input) {
@@ -26,18 +30,11 @@ public class echo_Server extends Service {
         thSrv.run();
     }
 
-    class DescriptionReveived{
-        public DescriptionReveived(byte[] arr, String URL){
-            this.message=arr;
-            this.URLSender=URL;
-        }
-        public byte[] message;
-        public String URLSender;
-    }
+
 
     class SrvThr extends Service.ServerThread {
 
-        public void setClient(Service.Client client){
+        public void setClient(abstraction.Client client){
             this.client = client;
         }
 
@@ -45,9 +42,9 @@ public class echo_Server extends Service {
             @Override
             public void handle(Context ctx) throws Exception {
                 byte[] received = ctx.bodyAsBytes();
-                System.out.println("ORIGINAL SENDER PATH==>"+ctx.req.getServletPath());
-                String senderURL = "http://"+ ctx.host()+"/";
-               // receive(new DescriptionReveived(received, senderURL));
+                String senderURL = "http://"+ ctx.ip()+":"+Message.restoreMessage(received).port+"/";
+                System.out.println("Original=>"+senderURL);
+                receive(new DescriptionReveived(Message.restoreMessage(received).message, senderURL));
             }
         };
         public void run(){

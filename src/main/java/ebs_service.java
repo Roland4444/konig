@@ -1,3 +1,6 @@
+import abstraction.Client;
+import abstraction.DescriptionReveived;
+import abstraction.Message;
 import abstraction.Service;
 import io.javalin.Context;
 import io.javalin.Handler;
@@ -8,14 +11,11 @@ public class ebs_service extends Service {
     }
     @Override
     public void receive(Object input) {
-        byte[] arr = (byte[]) input;
-        System.out.println("Just received==>"+new String(arr));
-    }
+        DescriptionReveived desc = (DescriptionReveived) input;
+        System.out.println("Just received==>"+new String(desc.message));
+        System.out.println("FROM"+ desc.URLSender);
 
-    public int getPortFromURL(){
-        return Integer.parseInt(this.URL.substring(this.URL.lastIndexOf(":")+1, this.URL.length()-1));
     }
-
     @Override
     public void  setupServer(){
         Thread thSrv = new SrvThr();
@@ -25,7 +25,7 @@ public class ebs_service extends Service {
 
     class SrvThr extends ServerThread  {
 
-        public void setClient(Client client){
+        public void setClient(abstraction.Client client){
             this.client = client;
         }
 
@@ -33,7 +33,10 @@ public class ebs_service extends Service {
             @Override
             public void handle(Context ctx) throws Exception {
                 byte[] received = ctx.bodyAsBytes();
-                receive(received);
+                String senderURL = "http://"+ ctx.ip()+":"+Message.restoreMessage(received).port+"/";
+                System.out.println("Original=>"+senderURL);
+                receive(new DescriptionReveived(Message.restoreMessage(received).message, senderURL));
+
 
             }
         };
