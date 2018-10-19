@@ -2,22 +2,14 @@ import abstraction.Service;
 import io.javalin.Context;
 import io.javalin.Handler;
 import io.javalin.Javalin;
-
-import java.io.IOException;
-import java.sql.SQLException;
-
 public class ebs_service extends Service {
     public ebs_service(String URL) {
         super(URL);
     }
-    public String responce;
-    public int lenInput;
     @Override
     public void receive(Object input) {
-        responce="received";
-        String casted  = (String) input;
-        lenInput = casted.length();
-        System.out.println(casted.length());
+        byte[] arr = (byte[]) input;
+        System.out.println("Just received==>"+new String(arr));
     }
 
     public int getPortFromURL(){
@@ -26,15 +18,23 @@ public class ebs_service extends Service {
 
     @Override
     public void  setupServer(){
-        Thread thSrv = new ServerThread();
+        Thread thSrv = new SrvThr();
+        ((ServerThread) thSrv).setClient(this.Client);
         thSrv.run();
     }
 
-    class ServerThread extends Thread{
+    class SrvThr extends ServerThread  {
+
+        public void setClient(Client client){
+            this.client = client;
+        }
+
         Handler rootHandler=new Handler() {
             @Override
             public void handle(Context ctx) throws Exception {
-                ctx.html("yo");
+                byte[] received = ctx.bodyAsBytes();
+                receive(received);
+
             }
         };
         public void run(){
