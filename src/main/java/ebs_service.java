@@ -1,17 +1,23 @@
-import abstraction.Client;
-import abstraction.DescriptionReveived;
-import abstraction.Message;
-import abstraction.Service;
+import abstraction.*;
 import io.javalin.Context;
 import io.javalin.Handler;
 import io.javalin.Javalin;
+
+import java.io.*;
+
 public class ebs_service extends Service {
     public ebs_service(String URL) {
         super(URL);
     }
     @Override
-    public void receive(Object input) {
+    public void receive(Object input) throws IOException {
         DescriptionReveived desc = (DescriptionReveived) input;
+        VoiceFile voice = VoiceFile.restoreVoiceFile(desc.message);
+        byte[] filecont = voice.content;
+        BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(voice.name));
+        bos.write(voice.content);
+        bos.close();
+        new File(voice.name).delete();
         System.out.println("Just received==>"+new String(desc.message));
         System.out.println("FROM"+ desc.URLSender);
 
@@ -47,4 +53,6 @@ public class ebs_service extends Service {
 
         }
     }
+
+
 }

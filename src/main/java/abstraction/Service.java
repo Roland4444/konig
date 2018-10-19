@@ -1,4 +1,8 @@
 package abstraction;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 public abstract class Service {
     public final String URL;
     public Service(String URL ){
@@ -11,7 +15,7 @@ public abstract class Service {
     }
     public Client Client;
     protected abstract  void setupServer();
-    public abstract void receive(Object input);
+    public abstract void receive(Object input) throws IOException;
 
     public abstract class ServerThread extends Thread{
         public Client client;

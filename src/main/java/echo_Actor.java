@@ -7,14 +7,18 @@ import io.javalin.Handler;
 import io.javalin.Javalin;
 
 public class echo_Actor extends Service {
+    int counter=0;
     public echo_Actor(String URL) {
         super(URL);
         this.Client.port=getPortFromURL();
     }
     @Override
     public void receive(Object input) {
+        counter++;
+        System.out.println("ITERATION"+counter);
         DescriptionReveived desc = (DescriptionReveived) input;
-        System.out.println("Just received==>"+new String(desc.message));
+        byte[] rr = (byte[]) desc.message;
+        System.out.println("Just received==>"+new String(rr));
         System.out.println("Sending back... to "+ desc.URLSender);
         Client.sendAsync(desc.message, desc.URLSender);
     }
