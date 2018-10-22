@@ -7,7 +7,7 @@ public class Message implements Serializable {
     }
     public int port;
     public byte[] message;
-    public static Message restoreMessage(byte[] input){
+    public Message restoreMessage(byte[] input){
         Object o=null;
         ByteArrayInputStream bis = new ByteArrayInputStream(input);
         ObjectInput in = null;
@@ -30,7 +30,7 @@ public class Message implements Serializable {
         return (Message) o;
     }
 
-    public static byte[] saveMessagetoByte(Message event){
+    public  byte[] saveMessagetoByte(Message event){
         byte[] Result=null ;
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         ObjectOutput out = null;
