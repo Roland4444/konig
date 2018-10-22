@@ -17,7 +17,7 @@ public class ebs_service extends Service {
         BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(voice.name));
         bos.write(voice.content);
         bos.close();
-        new File(voice.name).delete();
+        //new File(voice.name).delete();
         System.out.println("Just received==>"+new String(desc.message));
         System.out.println("FROM"+ desc.URLSender);
 

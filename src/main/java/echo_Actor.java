@@ -34,8 +34,6 @@ public class echo_Actor extends Service {
         thSrv.run();
     }
 
-
-
     class SrvThr extends Service.ServerThread {
 
         public void setClient(abstraction.Client client){
